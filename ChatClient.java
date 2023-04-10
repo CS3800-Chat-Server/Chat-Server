@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class ChatClient {
+public class ChatClient implements Runnable {
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 1234;
     private static final String EXIT_COMMAND = ".";
@@ -12,11 +12,13 @@ public class ChatClient {
     private BufferedReader in;
     private PrintWriter out;
     private Scanner scanner;
+    private String response;
 
     public ChatClient() {
         scanner = new Scanner(System.in);
     }
 
+    @Override
     public void run() {
         try {
             // Connect to the server
@@ -32,11 +34,16 @@ public class ChatClient {
             out.println("SIGNIN " + username);
 
             // Wait for acknowledgement message from server
-            String response = in.readLine();
+            response = in.readLine();
             if (!response.equals("ACK")) {
                 System.err.println("Unexpected server response: " + response);
                 return;
             }
+
+            // Start listener thread here
+            ClientListener clientListener = new ClientListener();
+            Thread clientListenerThread = new Thread(clientListener);
+            clientListenerThread.start();
 
             // Start reading user input and sending messages to server
             System.out.println("Enter your messages (type '.' to quit):");
@@ -52,10 +59,10 @@ public class ChatClient {
             }
 
             // Wait for confirmation message from server
-            response = in.readLine();
-            if (!response.equals("BYE")) {
-                System.err.println("Unexpected server response: " + response);
-            }
+            // response = in.readLine();
+            // if (!response.equals("BYE")) {
+            // System.err.println("Unexpected server response: " + response);
+            // }
 
             // Close socket and streams
             socket.close();
@@ -69,6 +76,23 @@ public class ChatClient {
 
     public static void main(String[] args) {
         ChatClient client = new ChatClient();
-        client.run();
+        Thread clientThread = new Thread(client);
+        clientThread.start();
+    }
+
+    private class ClientListener implements Runnable {
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    response = in.readLine();
+                    if (response == "BYE")
+                        break;
+                    System.out.println(response);
+                }
+            } catch (IOException e) {
+                System.err.println("IOException: " + e.getMessage());
+            }
+        }
     }
 }

@@ -39,6 +39,11 @@ public class ChatServer {
         clients.remove(username);
     }
 
+    public static void main(String[] args) {
+        ChatServer server = new ChatServer();
+        server.run();
+    }
+
     class ClientThread extends Thread {
         private Socket socket;
         private String username;
@@ -57,28 +62,26 @@ public class ChatServer {
                 // Wait for sign-in message from client
                 String request = in.readLine();
 
-
-
                 String[] tokens = request.split(" ");
                 if (tokens.length == 2 && tokens[0].equals("SIGNIN")) {
                     username = tokens[1];
                     System.out.println(username + " joined the chat");
                     addClient(username, out);
-    
+
                     // Send acknowledgement message to client
                     out.println("ACK");
                 } else {
                     System.err.println("Invalid sign-in request from client");
                     return;
                 }
-    
+
                 // Listen for incoming messages from client
                 while (true) {
                     request = in.readLine();
                     if (request == null) {
                         break;
                     }
-    
+
                     tokens = request.split(" ");
                     if (tokens.length == 2 && tokens[0].equals("MESSAGE")) {
                         String message = username + ": " + tokens[1];
@@ -87,7 +90,7 @@ public class ChatServer {
                         String signoffMessage = username + " left the chat";
                         removeClient(username);
                         broadcast(signoffMessage, null);
-    
+
                         // Send confirmation message to client
                         out.println("BYE");
                         break;
@@ -95,7 +98,7 @@ public class ChatServer {
                         System.err.println("Invalid request from client: " + request);
                     }
                 }
-    
+
                 // Close socket and streams
                 socket.close();
                 in.close();
@@ -105,10 +108,4 @@ public class ChatServer {
             }
         }
     }
-    
-    public static void main(String[] args) {
-        ChatServer server = new ChatServer();
-        server.run();
-    }
 }
-    
