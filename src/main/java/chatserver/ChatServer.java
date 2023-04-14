@@ -3,40 +3,44 @@ package src.main.java.chatserver;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChatServer {
-    private int PORT;
+    private static final int PORT = 1234;
     private ServerSocket serverSocket;
 
     private Map<String, PrintWriter> clients = new HashMap<>();
+    private LinkedBlockingQueue<String> pbq = new LinkedBlockingQueue<String>();
 
-    ChatServer(int port) throws IOException {
-        serverSocket = new ServerSocket(port);
-        this.PORT = port;
-    }
-
-    public void run() {
+    public void run() throws IOException {
         try {
             // Start the server socket
+            serverSocket = new ServerSocket(PORT);
             System.out.println("Chat server started on port " + PORT);
+
+            // Start queue thread
+            QueueThread qt = new QueueThread(pbq);
+            Thread queueThread = new Thread(qt);
+            queueThread.start();
 
             // Listen for incoming connections
             while (true) {
                 Socket socket = serverSocket.accept();
-                new ClientThread(socket).start();
+
+                ClientThread ct = new ClientThread(socket);
+                Thread clientThread = new Thread(ct);
+                clientThread.start();
             }
 
         } catch (IOException e) {
             System.err.println("IOException: " + e.getMessage());
+        } finally {
+            serverSocket.close();
         }
     }
 
     private synchronized void broadcast(String message, PrintWriter excludeClient) {
-        for (PrintWriter client : clients.values()) {
-            if (client != excludeClient) {
-                client.println(message);
-            }
-        }
+        pbq.add(message);
     }
 
     private synchronized void addClient(String username, PrintWriter out) {
@@ -48,11 +52,11 @@ public class ChatServer {
     }
 
     public static void main(String[] args) throws IOException {
-        ChatServer server = new ChatServer(1234);
+        ChatServer server = new ChatServer();
         server.run();
     }
 
-    class ClientThread extends Thread {
+    private class ClientThread implements Runnable {
         private Socket socket;
         private String username;
         private BufferedReader in;
@@ -62,6 +66,7 @@ public class ChatServer {
             this.socket = socket;
         }
 
+        @Override
         public void run() {
             try {
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -85,12 +90,15 @@ public class ChatServer {
 
                 // Listen for incoming messages from client
                 while (true) {
+
                     request = in.readLine();
                     if (request == null) {
                         break;
                     }
 
+                    // Split messaage and evaluate type
                     tokens = request.split(" ");
+
                     if (tokens.length >= 2 && tokens[0].equals("MESSAGE")) {
                         String message = username + ": "
                                 + String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
@@ -114,6 +122,37 @@ public class ChatServer {
                 out.close();
             } catch (IOException e) {
                 System.err.println("IOException: " + e.getMessage());
+            }
+        }
+    }
+
+    private class QueueThread implements Runnable {
+        private LinkedBlockingQueue<String> queue;
+
+        QueueThread(LinkedBlockingQueue<String> queue) {
+            this.queue = queue;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    String headMessage = (String) queue.poll();
+
+                    if (headMessage == null) {
+                        continue;
+                    } else {
+                        String excludeClient = headMessage.split(":")[0].trim();
+                        excludeClient = excludeClient.split(" ")[0];
+                        for (Map.Entry<String, PrintWriter> pair : clients.entrySet()) {
+                            if (!pair.getKey().equals(excludeClient)) {
+                                pair.getValue().println(headMessage);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("QUEUE THREAD ERROR : " + e.getMessage());
             }
         }
     }
