@@ -80,12 +80,12 @@ public class ChatClient {
             try {
                 while (true) {
                     response = in.readLine();
-                    if (response == "BYE")
+                    if (response.equals("BYE"))
                         break;
                     System.out.println(response);
                 }
             } catch (IOException e) {
-                System.err.println("Client Listener IOException: " + e.getMessage());
+                // Socket closed
             }
         }
     }
