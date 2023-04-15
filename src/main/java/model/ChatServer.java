@@ -177,10 +177,10 @@ public class ChatServer {
                         Integer excludeClientInt = Integer.valueOf(excludeClientString);
 
                         for (Map.Entry<Integer, PrintWriter> pair : clients.entrySet()) {
-                            if (pair.getKey() != excludeClientInt) {
-                                pair.getValue().println(
-                                        String.join(" ", Arrays.copyOfRange(stringTokens, 1, stringTokens.length)));
-                            }
+                            // if (pair.getKey() != excludeClientInt) {
+                            pair.getValue().println(
+                                    String.join(" ", Arrays.copyOfRange(stringTokens, 1, stringTokens.length)));
+                            // }
                         }
                     }
                 }
