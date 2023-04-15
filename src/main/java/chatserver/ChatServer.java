@@ -14,6 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChatServer {
     private static final int PORT = 1234;
+    private final int numQueues = 5;
     private ServerSocket serverSocket;
 
     private Map<Integer, PrintWriter> clients = new HashMap<>();
@@ -21,22 +22,22 @@ public class ChatServer {
 
     public void run() throws IOException {
         try {
-
             // Start the server socket
             serverSocket = new ServerSocket(PORT);
             System.out.println("Chat server started on port " + PORT);
 
             // Initialize list of message queues and launch threads
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < numQueues; i++) {
                 queuelist.add(new LinkedBlockingQueue<String>());
                 QueueThread q = new QueueThread(queuelist.get(i));
                 Thread qThread = new Thread(q);
                 qThread.start();
             }
 
+            // Starting id for first client
             int clientId = 0;
 
-            // Listen for incoming connections
+            // Accept incoming connections, launch ClientThread, and increment Id
             while (true) {
                 Socket socket = serverSocket.accept();
 
@@ -46,7 +47,6 @@ public class ChatServer {
 
                 clientId++;
             }
-
         } catch (IOException e) {
             System.err.println("IOException: " + e.getMessage());
         } finally {
@@ -55,7 +55,7 @@ public class ChatServer {
     }
 
     private synchronized void broadcast(String message, int clientId) {
-        queuelist.get(clientId % 5).add(clientId + " " + message);
+        queuelist.get(clientId % queuelist.size()).add(clientId + " " + message);
     }
 
     private synchronized void addClient(Integer id, PrintWriter out) {
@@ -92,7 +92,10 @@ public class ChatServer {
                 // Wait for sign-in message from client
                 String request = in.readLine();
 
+                // Split message into tokens
                 String[] tokens = request.split(" ");
+
+                // Process sign in message from client
                 if (tokens.length >= 2 && tokens[0].equals("SIGNIN")) {
                     username = String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
                     broadcast(username + " joined the chat", id);
@@ -102,6 +105,10 @@ public class ChatServer {
                     out.println("ACK");
                 } else {
                     System.err.println("Invalid sign-in request from client");
+                    out.println("BYE");
+                    socket.close();
+                    in.close();
+                    out.close();
                     return;
                 }
 
@@ -113,9 +120,10 @@ public class ChatServer {
                         break;
                     }
 
-                    // Split messaage and evaluate type
+                    // Split message into tokens
                     tokens = request.split(" ");
 
+                    // Process message from client
                     if (tokens.length >= 2 && tokens[0].equals("MESSAGE")) {
                         String message = username + ": "
                                 + String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
@@ -125,20 +133,26 @@ public class ChatServer {
                         removeClient(id);
                         broadcast(signoffMessage, id);
 
-                        // Send confirmation message to client
+                        // Send closing confirmation acknowledgement to client
                         out.println("BYE");
                         break;
                     } else {
-                        System.err.println("Invalid request from client: " + request);
+                        System.err.println(
+                                "Invalid request from client " + username + " (id " + id + ") " + ": " + request);
                     }
                 }
 
-                // Close socket and streams
-                socket.close();
-                in.close();
-                out.close();
             } catch (IOException e) {
-                System.err.println("IOException: " + e.getMessage());
+                System.err.println("IOException handling user message: " + e.getMessage());
+            } finally {
+                try {
+                    // Close socket and streams
+                    socket.close();
+                    in.close();
+                    out.close();
+                } catch (IOException e) {
+                    System.err.println("IOException closing sockets: " + e.getMessage());
+                }
             }
         }
     }
@@ -172,7 +186,7 @@ public class ChatServer {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("QUEUE THREAD ERROR : " + e.getMessage());
+                System.out.println("Error in queue thread : " + e.getMessage());
             }
         }
     }
