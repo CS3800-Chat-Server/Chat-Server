@@ -80,7 +80,7 @@ public class ChatClient {
             try {
                 while (true) {
                     response = in.readLine();
-                    if (response.equals("BYE"))
+                    if (response == null || response.equals("BYE"))
                         break;
                     System.out.println(response);
                 }

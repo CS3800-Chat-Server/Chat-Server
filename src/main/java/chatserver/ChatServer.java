@@ -105,6 +105,7 @@ public class ChatServer {
                     out.println("ACK");
                 } else {
                     System.err.println("Invalid sign-in request from client");
+                    out.println("Invalid sign-in request to server");
                     out.println("BYE");
                     socket.close();
                     in.close();
