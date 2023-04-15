@@ -9,27 +9,35 @@ public class ChatServer {
     private static final int PORT = 1234;
     private ServerSocket serverSocket;
 
-    private Map<String, PrintWriter> clients = new HashMap<>();
-    private LinkedBlockingQueue<String> pbq = new LinkedBlockingQueue<String>();
+    private Map<Integer, PrintWriter> clients = new HashMap<>();
+    private ArrayList<LinkedBlockingQueue<String>> queuelist = new ArrayList<LinkedBlockingQueue<String>>(5);
 
     public void run() throws IOException {
         try {
+
             // Start the server socket
             serverSocket = new ServerSocket(PORT);
             System.out.println("Chat server started on port " + PORT);
 
-            // Start queue thread
-            QueueThread qt = new QueueThread(pbq);
-            Thread queueThread = new Thread(qt);
-            queueThread.start();
+            // Initialize list of message queues and launch threads
+            for (int i = 0; i < 5; i++) {
+                queuelist.add(new LinkedBlockingQueue<String>());
+                QueueThread q = new QueueThread(queuelist.get(i));
+                Thread qThread = new Thread(q);
+                qThread.start();
+            }
+
+            int clientId = 0;
 
             // Listen for incoming connections
             while (true) {
                 Socket socket = serverSocket.accept();
 
-                ClientThread ct = new ClientThread(socket);
+                ClientThread ct = new ClientThread(socket, clientId);
                 Thread clientThread = new Thread(ct);
                 clientThread.start();
+
+                clientId++;
             }
 
         } catch (IOException e) {
@@ -39,16 +47,16 @@ public class ChatServer {
         }
     }
 
-    private synchronized void broadcast(String message, PrintWriter excludeClient) {
-        pbq.add(message);
+    private synchronized void broadcast(String message, int clientId) {
+        queuelist.get(clientId % 5).add(clientId + " " + message);
     }
 
-    private synchronized void addClient(String username, PrintWriter out) {
-        clients.put(username, out);
+    private synchronized void addClient(Integer id, PrintWriter out) {
+        clients.put(id, out);
     }
 
-    private synchronized void removeClient(String username) {
-        clients.remove(username);
+    private synchronized void removeClient(Integer id) {
+        clients.remove(id);
     }
 
     public static void main(String[] args) throws IOException {
@@ -58,12 +66,14 @@ public class ChatServer {
 
     private class ClientThread implements Runnable {
         private Socket socket;
+        private int id;
         private String username;
         private BufferedReader in;
         private PrintWriter out;
 
-        public ClientThread(Socket socket) {
+        public ClientThread(Socket socket, int id) {
             this.socket = socket;
+            this.id = id;
         }
 
         @Override
@@ -76,10 +86,10 @@ public class ChatServer {
                 String request = in.readLine();
 
                 String[] tokens = request.split(" ");
-                if (tokens.length == 2 && tokens[0].equals("SIGNIN")) {
-                    username = tokens[1];
-                    broadcast(username + " joined the chat", out);
-                    addClient(username, out);
+                if (tokens.length >= 2 && tokens[0].equals("SIGNIN")) {
+                    username = String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
+                    broadcast(username + " joined the chat", id);
+                    addClient(id, out);
 
                     // Send acknowledgement message to client
                     out.println("ACK");
@@ -102,11 +112,11 @@ public class ChatServer {
                     if (tokens.length >= 2 && tokens[0].equals("MESSAGE")) {
                         String message = username + ": "
                                 + String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
-                        broadcast(message, out);
-                    } else if (tokens.length == 2 && tokens[0].equals("SIGNOFF")) {
+                        broadcast(message, id);
+                    } else if (tokens.length >= 2 && tokens[0].equals("SIGNOFF")) {
                         String signoffMessage = username + " left the chat";
-                        removeClient(username);
-                        broadcast(signoffMessage, null);
+                        removeClient(id);
+                        broadcast(signoffMessage, id);
 
                         // Send confirmation message to client
                         out.println("BYE");
@@ -142,11 +152,14 @@ public class ChatServer {
                     if (headMessage == null) {
                         continue;
                     } else {
-                        String excludeClient = headMessage.split(":")[0].trim();
-                        excludeClient = excludeClient.split(" ")[0];
-                        for (Map.Entry<String, PrintWriter> pair : clients.entrySet()) {
-                            if (!pair.getKey().equals(excludeClient)) {
-                                pair.getValue().println(headMessage);
+                        String[] stringTokens = headMessage.split(" ");
+                        String excludeClientString = stringTokens[0].trim();
+                        Integer excludeClientInt = Integer.parseInt(excludeClientString);
+
+                        for (Map.Entry<Integer, PrintWriter> pair : clients.entrySet()) {
+                            if (!(pair.getKey() == excludeClientInt)) {
+                                pair.getValue().println(
+                                        String.join(" ", Arrays.copyOfRange(stringTokens, 1, stringTokens.length)));
                             }
                         }
                     }
