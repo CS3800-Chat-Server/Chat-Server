@@ -1,4 +1,4 @@
-package src.main.java.chatserver;
+package src.main.java.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,8 +17,8 @@ public class ChatServer {
     private final int numQueues = 5;
     private ServerSocket serverSocket;
 
-    private Map<Integer, PrintWriter> clients = new HashMap<>();
-    private ArrayList<LinkedBlockingQueue<String>> queuelist = new ArrayList<LinkedBlockingQueue<String>>(5);
+    final private Map<Integer, PrintWriter> clients = new HashMap<Integer, PrintWriter>();
+    final private ArrayList<LinkedBlockingQueue<String>> queuelist = new ArrayList<LinkedBlockingQueue<String>>(5);
 
     public void run() throws IOException {
         try {
@@ -72,8 +72,8 @@ public class ChatServer {
     }
 
     private class ClientThread implements Runnable {
-        private Socket socket;
-        private int id;
+        final private Socket socket;
+        final private int id;
         private String username;
         private BufferedReader in;
         private PrintWriter out;
@@ -159,7 +159,7 @@ public class ChatServer {
     }
 
     private class QueueThread implements Runnable {
-        private LinkedBlockingQueue<String> queue;
+        private final LinkedBlockingQueue<String> queue;
 
         QueueThread(LinkedBlockingQueue<String> queue) {
             this.queue = queue;
@@ -171,22 +171,20 @@ public class ChatServer {
                 while (true) {
                     String headMessage = (String) queue.poll();
 
-                    if (headMessage == null) {
-                        continue;
-                    } else {
+                    if (!(headMessage == null)) {
                         String[] stringTokens = headMessage.split(" ");
                         String excludeClientString = stringTokens[0].trim();
-                        Integer excludeClientInt = Integer.parseInt(excludeClientString);
+                        Integer excludeClientInt = Integer.valueOf(excludeClientString);
 
                         for (Map.Entry<Integer, PrintWriter> pair : clients.entrySet()) {
-                            if (!(pair.getKey() == excludeClientInt)) {
+                            if (pair.getKey() != excludeClientInt) {
                                 pair.getValue().println(
                                         String.join(" ", Arrays.copyOfRange(stringTokens, 1, stringTokens.length)));
                             }
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Error in queue thread : " + e.getMessage());
             }
         }

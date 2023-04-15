@@ -1,4 +1,4 @@
-package src.main.java.chatclient;
+package src.main.java.model;
 
 import java.io.*;
 import java.net.*;
@@ -15,6 +15,7 @@ public class ChatClient {
     private PrintWriter out;
     private Scanner scanner;
     private String response;
+    private boolean running = true;
 
     public ChatClient() {
         scanner = new Scanner(System.in);
@@ -60,6 +61,10 @@ public class ChatClient {
             }
 
             // Close socket and streams
+            while (running) {
+                // wait for ClientListener to close
+            }
+
             socket.close();
             in.close();
             out.close();
@@ -84,6 +89,7 @@ public class ChatClient {
                         break;
                     System.out.println(response);
                 }
+                running = false;
             } catch (IOException e) {
                 // Socket closed
             }
