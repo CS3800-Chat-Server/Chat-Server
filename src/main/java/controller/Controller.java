@@ -2,45 +2,52 @@ package src.main.java.controller;
 
 import src.main.java.model.ChatClient;
 import src.main.java.view.ClientGUI;
+import src.main.java.view.LoginGUI;
 
-public class Controller implements IClientHandler {
+public class Controller {
     private ChatClient model;
-    private ClientGUI view;
+    private LoginGUI viewLogin;
+    private ClientGUI viewChatClient;
 
     public Controller() {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                view = ClientGUI(this);
-                view.setVisible(true);
-            }
-        });
+        viewChatClient = new ClientGUI(this);
+        viewLogin = new LoginGUI();
         this.model = new ChatClient(this);
-        this.model.run();
     }
 
-    protected ClientGUI ClientGUI(Runnable runnable) {
-        return null;
-    }
-
-    @Override
     public void handleMessageReceived(String message) {
-        view.addMessage(message);
+        viewChatClient.addMessage(message);
     }
 
-    @Override
     public void handleMessageSent(String message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'handleMessageSent'");
+        model.getServerSender().sendMessage(message);
     }
 
-    @Override
     public void addUser(String userName) {
-        view.addUserName(userName);
+        viewChatClient.addUserName(userName);
+    }
+
+    public void toggleLoginVisible() {
+        boolean isVisible = viewLogin.isVisible() ? false : true;
+        viewLogin.setVisible(isVisible);
+    }
+
+    public void toggleClientVisible() {
+        boolean isVisible = viewChatClient.isVisible() ? false : true;
+        viewChatClient.setVisible(isVisible);
+    }
+
+    public void closeLogin() {
+        viewLogin.close();
+    }
+
+    public void closeClient() {
+        viewChatClient.close();
     }
 
     public static void main(String[] args) {
-        new Controller();
+        Controller chatServerController = new Controller();
+        chatServerController.model.run();
     }
 
 }
