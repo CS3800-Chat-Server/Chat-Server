@@ -68,6 +68,10 @@ auxiliary.show.customizer.message=<message>
                         <label>Test GUI</label>
                         <target>test-gui</target>
                     </action>
+                    <action>
+                        <label>Test ClientwGUI</label>
+                        <target>test</target>
+                    </action>
                 </context-menu>
             </view>
             <subprojects/>

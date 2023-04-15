@@ -3,11 +3,14 @@ package src.main.java.model;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import src.main.java.controller.*;
 
 public class ChatClient {
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 1234;
     private static final String EXIT_COMMAND = ".";
+
+    private IClientHandler clientHandler;
 
     private String username;
     private Socket socket;
@@ -17,8 +20,9 @@ public class ChatClient {
     private String response;
     private boolean running = true;
 
-    public ChatClient() {
-        scanner = new Scanner(System.in);
+    public ChatClient(IClientHandler clientController) {
+        this.clientHandler = clientController;
+        this.scanner = new Scanner(System.in);
     }
 
     public void run() {
@@ -74,10 +78,10 @@ public class ChatClient {
         }
     }
 
-    public static void main(String[] args) {
-        ChatClient client = new ChatClient();
-        client.run();
-    }
+    // public static void main(String[] args) {
+    // ChatClient client = new ChatClient();
+    // client.run();
+    // }
 
     private class ClientListener implements Runnable {
         @Override
@@ -87,6 +91,7 @@ public class ChatClient {
                     response = in.readLine();
                     if (response == null || response.equals("BYE"))
                         break;
+                    clientHandler.handleMessageReceived(response);
                     System.out.println(response);
                 }
                 running = false;
