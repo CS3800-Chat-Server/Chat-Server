@@ -100,11 +100,19 @@ public class ChatClient {
             try {
                 while (true) {
                     response = in.readLine();
-                    if (response == null || response.equals("BYE")) {
+                    String parts[] = response.split(" ", 2);
+
+                    if (response == null || parts[0].equals("BYE")) { // This User Signoff
                         isRunning = false;
                         break;
+                    } else if (parts[0].equals("MESSAGE")) { // message
+                        clientHandler.handleMessageReceived(parts[1]);
+                    } else if (parts[0].equals("SIGNIN")) { // Signin
+                        clientHandler.handleMessageReceived(parts[1]);
+                    } else if (parts[0].equals("SIGNOFF")) { // Other User Signoff
+                        clientHandler.handleMessageReceived(parts[1]);
                     }
-                    clientHandler.handleMessageReceived(response);
+
                 }
             } catch (IOException e) {
                 // Socket closed
