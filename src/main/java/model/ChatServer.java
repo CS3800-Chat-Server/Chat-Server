@@ -55,7 +55,7 @@ public class ChatServer {
     }
 
     private synchronized void broadcast(String message, int clientId) {
-        queuelist.get(clientId % queuelist.size()).add(clientId + " " + message);
+        queuelist.get(clientId % queuelist.size()).add(message);
     }
 
     private synchronized void addClient(Integer id, PrintWriter out) {
@@ -98,7 +98,7 @@ public class ChatServer {
                 // Process sign in message from client
                 if (tokens.length >= 2 && tokens[0].equals("SIGNIN")) {
                     username = String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
-                    broadcast(username + " joined the chat", id);
+                    broadcast(tokens[0] + " " + username + " joined the chat", id);
                     addClient(id, out);
 
                     // Send acknowledgement message to client
@@ -126,11 +126,11 @@ public class ChatServer {
 
                     // Process message from client
                     if (tokens.length >= 2 && tokens[0].equals("MESSAGE")) {
-                        String message = username + ": "
+                        String message = tokens[0] + " " + username + ": "
                                 + String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
                         broadcast(message, id);
                     } else if (tokens.length >= 2 && tokens[0].equals("SIGNOFF")) {
-                        String signoffMessage = username + " left the chat";
+                        String signoffMessage = tokens[0] + " " + username + " left the chat";
                         removeClient(id);
                         broadcast(signoffMessage, id);
 
@@ -172,15 +172,8 @@ public class ChatServer {
                     String headMessage = (String) queue.poll();
 
                     if (!(headMessage == null)) {
-                        String[] stringTokens = headMessage.split(" ");
-                        String excludeClientString = stringTokens[0].trim();
-                        Integer excludeClientInt = Integer.valueOf(excludeClientString);
-
                         for (Map.Entry<Integer, PrintWriter> pair : clients.entrySet()) {
-                            // if (pair.getKey() != excludeClientInt) {
-                            pair.getValue().println(
-                                    String.join(" ", Arrays.copyOfRange(stringTokens, 1, stringTokens.length)));
-                            // }
+                            pair.getValue().println(headMessage);
                         }
                     }
                 }
