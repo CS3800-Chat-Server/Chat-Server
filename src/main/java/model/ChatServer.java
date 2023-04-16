@@ -137,6 +137,8 @@ public class ChatServer {
                         // Send closing confirmation acknowledgement to client
                         out.println("BYE");
                         break;
+                    } else if (tokens.length == 1) {
+                        continue;
                     } else {
                         System.err.println(
                                 "Invalid request from client " + username + " (id " + id + ") " + ": " + request);
