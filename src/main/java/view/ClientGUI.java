@@ -4,6 +4,8 @@
  */
 package src.main.java.view;
 
+import javax.swing.JOptionPane;
+
 import src.main.java.controller.*;
 
 /**
@@ -36,6 +38,7 @@ public class ClientGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -47,6 +50,17 @@ public class ClientGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(102, 102, 102));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                int option = JOptionPane.showConfirmDialog(ClientGUI.this, "Are you sure you want to exit?",
+                        "Confrim Exit",
+                        JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    // If the user confirms, dispose the window
+                    close();
+                }
+            }
+        });
 
         userInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -144,6 +158,7 @@ public class ClientGUI extends javax.swing.JFrame {
     }
 
     public void close() {
+        clientHandler.handleMessageSent(".");
         this.dispose();
     }
 
