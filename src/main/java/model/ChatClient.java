@@ -2,17 +2,10 @@ package src.main.java.model;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import src.main.java.controller.*;
 
 public class ChatClient {
-    private static final String SERVER_IP = "localhost";
-    private static final int SERVER_PORT = 1234;
     private static final String EXIT_COMMAND = ".";
-
-    enum Status {
-        WAIT, LOGIN, SEND
-    };
 
     private Controller clientHandler;
 
@@ -20,117 +13,85 @@ public class ChatClient {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-    private Scanner scanner;
     private String response;
-    private boolean running = true;
-
-    private ServerSender serverSender;
+    private volatile Boolean isRunning = true;
+    private volatile Boolean isLoggingIn = true;
 
     public ChatClient(Controller clientController) {
         this.clientHandler = clientController;
-        this.scanner = new Scanner(System.in);
-    }
-
-    public void initClient() {
-        try {
-            socket = new Socket(SERVER_IP, SERVER_PORT);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException e) {
-            System.out.println("IOException in initClient: " + e.getMessage());
-        }
     }
 
     public void run() {
+        this.clientHandler.toggleLoginVisible();
         try {
-            clientHandler.toggleLoginVisible();
-            // Recieve username, SERVER_IP, and SERVER_PORT
 
-            // Connect to the server
-            socket = new Socket(SERVER_IP, SERVER_PORT);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-
-            // Prompt for username
-            System.out.print("Enter your username: ");
-            username = scanner.nextLine();
+            while (this.isLoggingIn) {
+                // Wait for login from GUI
+            }
 
             // Send sign-in message to server
-            out.println("SIGNIN " + username);
+            this.out.println("SIGNIN " + username);
 
             // Wait for acknowledgement message from server
-            response = in.readLine();
-            if (!response.equals("ACK")) {
-                System.err.println("Unexpected server response: " + response);
+            this.response = in.readLine();
+            if (!this.response.equals("ACK")) {
+                System.err.println("Unexpected server response: " + this.response);
                 return;
             }
 
-            clientHandler.closeLogin();
-            clientHandler.toggleClientVisible();
+            this.clientHandler.closeLogin();
+            this.clientHandler.toggleClientVisible();
 
-            // Start listener thread here
+            // Start listener thread
             ClientListener clientListener = new ClientListener();
             Thread clientListenerThread = new Thread(clientListener);
             clientListenerThread.start();
 
-            serverSender = new ServerSender();
-            Thread serverSenderThread = new Thread(serverSender);
-            serverSenderThread.start();
-
-            while (running) {
-                // Server will stay running until user inputs "."
+            while (this.isRunning) {
+                /**
+                 * Server will stay running until user inputs "."
+                 * and ClientListener recieves sign off confirmation "BYE"
+                 */
             }
 
+            this.clientHandler.closeClient();
+
             // Close socket and streams
-            socket.close();
-            in.close();
-            out.close();
-            clientHandler.closeClient();
+            this.socket.close();
+            this.in.close();
+            this.out.close();
 
         } catch (IOException e) {
             System.err.println("IOException: " + e.getMessage());
         }
+
+        System.exit(0);
     }
 
-    public class ServerSender implements Runnable {
-        Status stat = Status.WAIT;
-        String message = "";
-
-        @Override
-        public void run() {
-            while (running) {
-                if (stat == Status.LOGIN) {
-                    signIn();
-                    stat = Status.WAIT;
-                } else if (stat == Status.SEND) {
-                    sendMessage(this.message);
-                    stat = Status.WAIT;
-                    this.message = "";
-                } else {
-                    continue;
-                }
-            }
+    public void tryLoginInfo(String username, String ip, Integer port) {
+        try {
+            this.socket = new Socket(ip, port);
+            this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            this.out = new PrintWriter(this.socket.getOutputStream(), true);
+            this.username = username;
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
         }
 
-        public void signIn() {
-
+        if (this.socket == null || this.socket.isClosed() || !this.socket.isConnected() || !this.socket.isBound()
+                || this.socket.isInputShutdown() || this.socket.isOutputShutdown()) {
+            return;
         }
 
-        public void sendMessage(String message) {
-            if (message.equals(EXIT_COMMAND)) {
-                out.println("SIGNOFF " + username);
-            } else {
-                out.println("MESSAGE " + message);
-            }
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
+        isLoggingIn = false;
     }
 
-    public ServerSender getServerSender() {
-        return this.serverSender;
+    public void sendMessage(String message) {
+        if (message.equals(EXIT_COMMAND)) {
+            out.println("SIGNOFF " + this.username);
+        } else {
+            out.println("MESSAGE " + message);
+        }
     }
 
     private class ClientListener implements Runnable {
@@ -140,15 +101,14 @@ public class ChatClient {
                 while (true) {
                     response = in.readLine();
                     if (response == null || response.equals("BYE")) {
-                        running = false;
+                        isRunning = false;
                         break;
                     }
                     clientHandler.handleMessageReceived(response);
-                    System.out.println(response);
                 }
-
             } catch (IOException e) {
                 // Socket closed
+                isRunning = false;
             }
         }
     }
