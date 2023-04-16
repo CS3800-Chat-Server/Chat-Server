@@ -11,7 +11,7 @@ public class Controller {
 
     public Controller() {
         viewChatClient = new ClientGUI(this);
-        viewLogin = new LoginGUI();
+        viewLogin = new LoginGUI(this);
         this.model = new ChatClient(this);
     }
 
@@ -20,7 +20,16 @@ public class Controller {
     }
 
     public void handleMessageSent(String message) {
-        model.getServerSender().sendMessage(message);
+        model.sendMessage(message);
+    }
+
+    public void handleLoginMessage(String username, String ip, Integer port) {
+        model.tryLoginInfo(username, ip, port);
+    }
+
+    public void handleLoginError() {
+        // TODO: Implement handling login errors
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
     public void addUser(String userName) {
@@ -49,5 +58,4 @@ public class Controller {
         Controller chatServerController = new Controller();
         chatServerController.model.run();
     }
-
 }
