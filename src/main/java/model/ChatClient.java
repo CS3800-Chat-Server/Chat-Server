@@ -23,20 +23,10 @@ public class ChatClient {
 
     public void run() {
         this.clientHandler.toggleLoginVisible();
-        try {
 
+        try {
             while (this.isLoggingIn) {
                 // Wait for login from GUI
-            }
-
-            // Send sign-in message to server
-            this.out.println("SIGNIN " + username);
-
-            // Wait for acknowledgement message from server
-            this.response = in.readLine();
-            if (!this.response.equals("ACK")) {
-                System.err.println("Unexpected server response: " + this.response);
-                return;
             }
 
             this.clientHandler.closeLogin();
@@ -69,12 +59,13 @@ public class ChatClient {
     }
 
     public void tryLoginInfo(String username, String ip, Integer port) {
+
         try {
             this.socket = new Socket(ip, port);
             this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.out = new PrintWriter(this.socket.getOutputStream(), true);
-            this.username = username;
         } catch (IOException e) {
+            // Call controller function for error to loginGUI
             System.out.println("Error: " + e.getMessage());
         }
 
@@ -83,6 +74,23 @@ public class ChatClient {
             return;
         }
 
+        // Send sign-in message to server
+        this.out.println("SIGNIN " + username);
+
+        try {
+            // Wait for acknowledgement message from server
+            this.response = in.readLine();
+            if (!this.response.equals("ACK")) {
+                // Call controller function for error to loginGUI
+                return;
+            }
+        } catch (IOException e) {
+            System.err.println("IOException: " + e.getMessage());
+            // Call controller function for error to loginGUI
+            return;
+        }
+
+        this.username = username;
         isLoggingIn = false;
     }
 
