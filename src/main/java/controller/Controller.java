@@ -24,7 +24,12 @@ public class Controller {
     }
 
     public void handleLoginMessage(String username, String ip, Integer port) {
-        model.tryLoginInfo(username, ip, port);
+        try {
+            model.tryLoginInfo(username, ip, port);
+        } catch (Exception e) {
+            viewLogin.displayLoginError();
+        }
+
     }
 
     public void handleLoginError() {
