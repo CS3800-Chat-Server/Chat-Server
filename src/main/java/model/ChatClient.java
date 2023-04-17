@@ -58,36 +58,45 @@ public class ChatClient {
         System.exit(0);
     }
 
-    public void tryLoginInfo(String username, String ip, Integer port) {
-
+    public void tryLoginInfo(String username, String ip, Integer port) throws Exception {
         try {
             this.socket = new Socket(ip, port);
             this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.out = new PrintWriter(this.socket.getOutputStream(), true);
         } catch (IOException e) {
-            // Call controller function for error to loginGUI
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error 1");
+            socket.close();
+            in.close();
+            out.close();
+            throw e;
         }
 
         if (this.socket == null || this.socket.isClosed() || !this.socket.isConnected() || !this.socket.isBound()
                 || this.socket.isInputShutdown() || this.socket.isOutputShutdown()) {
+            System.out.println("Error 2");
             return;
         }
 
         // Send sign-in message to server
         this.out.println("SIGNIN " + username);
 
+        // Wait for acknowledgement message from server
         try {
-            // Wait for acknowledgement message from server
             this.response = in.readLine();
-            if (!this.response.equals("ACK")) {
-                // Call controller function for error to loginGUI
-                return;
-            }
         } catch (IOException e) {
-            System.err.println("IOException: " + e.getMessage());
-            // Call controller function for error to loginGUI
-            return;
+            System.out.println("Error 3");
+            socket.close();
+            in.close();
+            out.close();
+            throw e;
+        }
+
+        if (!this.response.equals("ACK")) {
+            System.out.println("Error 4");
+            socket.close();
+            in.close();
+            out.close();
+            throw new IOException("Did not receive ACK from server");
         }
 
         this.username = username;
