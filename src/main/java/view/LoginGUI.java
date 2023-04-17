@@ -210,6 +210,29 @@ public class LoginGUI extends javax.swing.JFrame {
             return;
         }
 
+        /*
+         * Add input validation for ip address, username, and port.
+         * 
+         * We can use address.matches("some regex") to match the input for ip to
+         * something like xxx.xxx.xxx.xxx
+         * 
+         * We can use a try catch to parse the value of port and check if it is between
+         * a valid port number
+         * 
+         * We can use username.matches("more regex") to check if the name is
+         * alphanumeric, or alternatively allow the user to name themselves whatever
+         * they want.
+         * 
+         * Any time there is an error for any of these cases we can create a error pane
+         * using the following:
+         * 
+         * JOptionPane.showMessageDialog(this, "Error Message", "Error",
+         * JOptionPane.ERROR_MESSAGE);
+         * 
+         * and then clear the wrong information and return out of the function before
+         * handling the login message with the controller
+         */
+
         // SEND LOGIN INFO TO CLIENT
         clientHandler.handleLoginMessage(username, address, Integer.valueOf(port));
 
