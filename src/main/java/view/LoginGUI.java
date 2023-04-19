@@ -5,6 +5,8 @@
 package src.main.java.view;
 
 import javax.swing.JOptionPane;
+import org.apache.commons.validator.routines.InetAddressValidator;
+
 
 import src.main.java.controller.*;
 
@@ -207,6 +209,44 @@ public class LoginGUI extends javax.swing.JFrame {
         String port = portInput.getText();
 
         if (address.length() == 0 || username.length() == 0 || port.length() == 0) {
+            return;
+        }
+
+        // validate IP using InetAddressValidator
+        InetAddressValidator validator = new InetAddressValidator();
+        if (!validator.isValidInet4Address(address) && !validator.isValidInet6Address(address))
+        {
+            // if invalid, bring up dialog to display error message
+            JOptionPane.showMessageDialog(this, "Not a valid IP address", "Error", JOptionPane.ERROR_MESSAGE);
+            // clear input
+            serverAddressInput.setText("");
+            return;
+        }
+
+        // validate username
+        String regex = "^[a-zA-Z0-9]+$";
+        if(!username.matches(regex))
+        {
+            JOptionPane.showMessageDialog(this, "Not a valid username", "Error", JOptionPane.ERROR_MESSAGE);
+            userNameInput.setText("");
+        }
+
+        // validate port number
+        int p;
+        try {
+            p = Integer.parseInt(port);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Not a valid port number", "Error", JOptionPane.ERROR_MESSAGE);
+            // clear input
+            portInput.setText("");
+            return;
+        }
+
+        // check if port number within valid range
+        if (p < 0 || p > 65535) {
+            JOptionPane.showMessageDialog(this, "Not a valid port number", "Error", JOptionPane.ERROR_MESSAGE);
+            // clear input
+            portInput.setText("");
             return;
         }
 
