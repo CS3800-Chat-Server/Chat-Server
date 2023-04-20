@@ -5,13 +5,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class ChatBot implements Runnable {
     private Socket socket;
     private volatile boolean isRunning = true;
     private int id;
     private PrintWriter writer;
-    
+
     public ChatBot(String ip, int port, int id) {
         try {
             this.socket = new Socket(ip, port);
@@ -82,6 +83,11 @@ public class ChatBot implements Runnable {
             ChatBot bot = new ChatBot(ip, port, i);
             userArray.add(bot);
             new Thread(bot).start();
+            try {
+                TimeUnit.MILLISECONDS.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // To stop the bots we can input a keyword or just wait for any input
