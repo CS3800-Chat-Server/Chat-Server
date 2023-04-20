@@ -103,14 +103,14 @@ public class ChatClient {
 
         this.username = username;
         isLoggingIn = false;
-        this.timestamp = new Date();
     }
 
     public void sendMessage(String message) {
         if (message.equals(EXIT_COMMAND)) {
             out.println("SIGNOFF " + this.username);
         } else {
-            out.println("MESSAGE " + message + " (" + timestamp + ")");
+            timestamp = new Date();
+            out.println("MESSAGE " + message + " [" + timestamp + "]");
         }
     }
 
