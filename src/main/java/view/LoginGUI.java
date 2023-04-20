@@ -5,10 +5,12 @@
 package src.main.java.view;
 
 import javax.swing.JOptionPane;
-import org.apache.commons.validator.routines.InetAddressValidator;
+//import org.apache.commons.validator.routines.InetAddressValidator;
 
 
 import src.main.java.controller.*;
+
+import java.util.regex.Pattern;
 
 /**
  *
@@ -213,8 +215,20 @@ public class LoginGUI extends javax.swing.JFrame {
         }
 
         // validate IP using InetAddressValidator
-        InetAddressValidator validator = new InetAddressValidator();
-        if (!validator.isValidInet4Address(address) && !validator.isValidInet6Address(address))
+//        InetAddressValidator validator = new InetAddressValidator();
+//        if (!validator.isValidInet4Address(address) && !validator.isValidInet6Address(address))
+//        {
+//            // if invalid, bring up dialog to display error message
+//            JOptionPane.showMessageDialog(this, "Not a valid IP address", "Error", JOptionPane.ERROR_MESSAGE);
+//            // clear input
+//            serverAddressInput.setText("");
+//            return;
+//        }
+
+        // validate IP using regex
+        Pattern pattern_4 = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+        Pattern pattern_6 = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+        if (!pattern_4.matcher(address).matches() && !pattern_6.matcher(address).matches())
         {
             // if invalid, bring up dialog to display error message
             JOptionPane.showMessageDialog(this, "Not a valid IP address", "Error", JOptionPane.ERROR_MESSAGE);
