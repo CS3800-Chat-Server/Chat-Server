@@ -7,7 +7,6 @@ package src.main.java.view;
 import javax.swing.JOptionPane;
 //import org.apache.commons.validator.routines.InetAddressValidator;
 
-
 import src.main.java.controller.*;
 
 import java.util.regex.Pattern;
@@ -37,6 +36,7 @@ public class LoginGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -48,7 +48,6 @@ public class LoginGUI extends javax.swing.JFrame {
         userNameText = new java.awt.Label();
         serverAddressText = new java.awt.Label();
         loginButton = new java.awt.Button();
-        exitButton = new java.awt.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,19 +67,15 @@ public class LoginGUI extends javax.swing.JFrame {
             }
         });
 
-        exitButton.setLabel("EXIT");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGroup(layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addGap(28, 28, 28)
                                                                 .addGroup(layout.createParallelGroup(
@@ -96,25 +91,19 @@ public class LoginGUI extends javax.swing.JFrame {
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addContainerGap()
                                                                 .addComponent(userNameInput,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                        298,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 298,
                                                                         javax.swing.GroupLayout.PREFERRED_SIZE))
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addContainerGap()
                                                                 .addComponent(serverAddressInput,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                        298,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 298,
                                                                         javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                .addPreferredGap(
-                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addGroup(layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
                                                                 false)
-                                                        .addComponent(portText,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        .addComponent(portText, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(layout.createSequentialGroup()
@@ -126,77 +115,47 @@ public class LoginGUI extends javax.swing.JFrame {
                                                         .addComponent(portInput,
                                                                 javax.swing.GroupLayout.Alignment.TRAILING,
                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)))
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addContainerGap()
-                                                .addComponent(loginLabel,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        61,
+                                                .addComponent(loginLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 61,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                layout.createSequentialGroup()
-                                                        .addGap(0, 0, Short.MAX_VALUE)
-                                                        .addComponent(exitButton,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                47,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(0, 0, Short.MAX_VALUE)))
                                 .addContainerGap()));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout
-                                .createSequentialGroup()
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(loginLabel)
-                                .addPreferredGap(
-                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                        14,
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14,
                                         Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(portText,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(portText, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(serverAddressText,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        .addComponent(serverAddressText, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(
-                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(portInput,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(portInput, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(serverAddressInput,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        .addComponent(serverAddressInput, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(21, 21, 21)
-                                .addComponent(userNameText,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(userNameText, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(6, 6, 6)
-                                .addGroup(layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(userNameInput,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(userNameInput, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(loginButton,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(4, 4, 4)
-                                .addComponent(exitButton,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap()));
+                                .addGap(38, 38, 38)));
 
         portText.getAccessibleContext().setAccessibleName("portText");
         userNameText.getAccessibleContext().setAccessibleName("userNameText");
@@ -214,22 +173,10 @@ public class LoginGUI extends javax.swing.JFrame {
             return;
         }
 
-        // validate IP using InetAddressValidator
-//        InetAddressValidator validator = new InetAddressValidator();
-//        if (!validator.isValidInet4Address(address) && !validator.isValidInet6Address(address))
-//        {
-//            // if invalid, bring up dialog to display error message
-//            JOptionPane.showMessageDialog(this, "Not a valid IP address", "Error", JOptionPane.ERROR_MESSAGE);
-//            // clear input
-//            serverAddressInput.setText("");
-//            return;
-//        }
-
         // validate IP using regex
-        Pattern pattern_4 = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
-        //Pattern pattern_6 = Pattern.compile("^\\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?\\s*$");
-        if (!pattern_4.matcher(address).matches())
-        {
+        Pattern pattern_4 = Pattern
+                .compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+        if (!pattern_4.matcher(address).matches()) {
             // if invalid, bring up dialog to display error message
             JOptionPane.showMessageDialog(this, "Not a valid IP address", "Error", JOptionPane.ERROR_MESSAGE);
             // clear input
@@ -239,8 +186,7 @@ public class LoginGUI extends javax.swing.JFrame {
 
         // validate username
         String regex = "^[a-zA-Z0-9]+$";
-        if(!username.matches(regex))
-        {
+        if (!username.matches(regex)) {
             JOptionPane.showMessageDialog(this, "Not a valid username", "Error", JOptionPane.ERROR_MESSAGE);
             userNameInput.setText("");
             return;
@@ -265,29 +211,6 @@ public class LoginGUI extends javax.swing.JFrame {
             return;
         }
 
-        /*
-         * Add input validation for ip address, username, and port.
-         * 
-         * We can use address.matches("some regex") to match the input for ip to
-         * something like xxx.xxx.xxx.xxx
-         * 
-         * We can use a try catch to parse the value of port and check if it is between
-         * a valid port number
-         * 
-         * We can use username.matches("more regex") to check if the name is
-         * alphanumeric, or alternatively allow the user to name themselves whatever
-         * they want.
-         * 
-         * Any time there is an error for any of these cases we can create a error pane
-         * using the following:
-         * 
-         * JOptionPane.showMessageDialog(this, "Error Message", "Error",
-         * JOptionPane.ERROR_MESSAGE);
-         * 
-         * and then clear the wrong information and return out of the function before
-         * handling the login message with the controller
-         */
-
         // SEND LOGIN INFO TO CLIENT
         clientHandler.handleLoginMessage(username, address, Integer.valueOf(port));
 
@@ -306,7 +229,6 @@ public class LoginGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Button exitButton;
     private java.awt.Button loginButton;
     private javax.swing.JLabel loginLabel;
     private java.awt.TextField portInput;
