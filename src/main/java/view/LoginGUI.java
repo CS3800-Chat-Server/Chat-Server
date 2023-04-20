@@ -229,6 +229,7 @@ public class LoginGUI extends javax.swing.JFrame {
         {
             JOptionPane.showMessageDialog(this, "Not a valid username", "Error", JOptionPane.ERROR_MESSAGE);
             userNameInput.setText("");
+            return;
         }
 
         // validate port number
