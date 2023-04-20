@@ -39,12 +39,12 @@ public class ClientGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         chatLog = new java.awt.List();
         userInput = new java.awt.TextField();
-        currentUserList = new java.awt.List();
         sendChatButton = new javax.swing.JButton();
         applicationLabel = new java.awt.Label();
 
@@ -84,20 +84,23 @@ public class ClientGUI extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(chatLog, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addComponent(chatLog, javax.swing.GroupLayout.PREFERRED_SIZE, 439,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(currentUserList, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(applicationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(userInput, javax.swing.GroupLayout.PREFERRED_SIZE, 439,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(sendChatButton)))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+                                                .addGroup(layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(applicationLabel,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 130,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addComponent(userInput,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 439,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(
+                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(sendChatButton)))
+                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap()));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -105,11 +108,7 @@ public class ClientGUI extends javax.swing.JFrame {
                                 .addComponent(applicationLabel, javax.swing.GroupLayout.PREFERRED_SIZE,
                                         javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(currentUserList, javax.swing.GroupLayout.DEFAULT_SIZE, 654,
-                                                Short.MAX_VALUE)
-                                        .addComponent(chatLog, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(chatLog, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(userInput, javax.swing.GroupLayout.Alignment.TRAILING,
@@ -153,10 +152,6 @@ public class ClientGUI extends javax.swing.JFrame {
         chatLog.add(message);
     }
 
-    public void addUserName(String userName) {
-        currentUserList.add(userName);
-    }
-
     public void close() {
         clientHandler.handleMessageSent(".");
         this.dispose();
@@ -165,7 +160,6 @@ public class ClientGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Label applicationLabel;
     private java.awt.List chatLog;
-    private java.awt.List currentUserList;
     private javax.swing.JButton sendChatButton;
     private java.awt.TextField userInput;
     // End of variables declaration//GEN-END:variables
