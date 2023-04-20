@@ -16,6 +16,7 @@
       <src path="${src.dir}/model"/>
       <src path="${src.dir}/view"/>
       <src path="${src.dir}/controller"/>
+      <src path="${src.dir}/tool"/>
     </javac>
   </target>
 
@@ -24,42 +25,21 @@
 
  <!-- Define the run-server target -->
   <target name="run-server" depends="compile">
-    <java classname="src.main.java.model.ChatServer" classpath="${build.dir}">
-      <!-- <arg value="1234"/> -->
-    </java>
-  </target>
-
-  <!-- Define the run-client target -->
-  <target name="run-client" depends="compile">
-    <java classname="src.main.java.model.ChatClient" classpath="${build.dir}">
-       <!-- <arg value="localhost"/> -->
-      <!-- <arg value="1234"/> -->
-    </java>
-  </target>
-
-  <!-- Define the test-gui target -->
-  <target name="test-gui" depends="compile">
-    <java classname="src.main.java.view.ClientGUI" classpath="${build.dir}">
-       <!-- <arg value="localhost"/> -->
-      <!-- <arg value="1234"/> -->
-    </java>
-  </target>
-  
-  <!-- Define the test-gui target -->
-  <target name="test-login-gui" depends="compile">
-    <java classname="src.main.java.view.LoginGUI" classpath="${build.dir}">
-       <!-- <arg value="localhost"/> -->
-      <!-- <arg value="1234"/> -->
-    </java>
+    <java classname="src.main.java.model.ChatServer" classpath="${build.dir}"></java>
   </target>
   
   <!-- Define the test target -->
   <target name="test" depends="compile">
-    <java classname="src.main.java.controller.Controller" classpath="${build.dir}">
-       <!-- <arg value="localhost"/> -->
-      <!-- <arg value="1234"/> -->
-    </java>
+    <java classname="src.main.java.controller.Controller" classpath="${build.dir}"></java>
   </target>
 
+  <!-- Define the chatbot target -->
+  <target name="chatbot" depends="compile">
+    <java classname="src.main.java.tool.ChatBot" classpath="${build.dir}">
+       <arg value="0.0.0.0"/>
+       <arg value="1234"/>
+       <arg value="5"/>
+    </java>
+  </target>
 
 </project>

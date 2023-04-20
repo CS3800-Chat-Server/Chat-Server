@@ -32,15 +32,6 @@ public class Controller {
 
     }
 
-    public void handleLoginError() {
-        // TODO: Implement handling login errors
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void addUser(String userName) {
-        viewChatClient.addUserName(userName);
-    }
-
     public void toggleLoginVisible() {
         boolean isVisible = viewLogin.isVisible() ? false : true;
         viewLogin.setVisible(isVisible);

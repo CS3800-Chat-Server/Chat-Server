@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import src.main.java.controller.*;
+import java.util.*;
 
 public class ChatClient {
     private static final String EXIT_COMMAND = ".";
@@ -13,6 +14,7 @@ public class ChatClient {
     private Controller clientHandler;
 
     private String username;
+    private Date timestamp = new Date();
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
@@ -110,7 +112,8 @@ public class ChatClient {
         if (message.equals(EXIT_COMMAND)) {
             out.println("SIGNOFF " + this.username);
         } else {
-            out.println("MESSAGE " + message);
+            timestamp = new Date();
+            out.println("MESSAGE " + message + " [" + timestamp + "]");
         }
     }
 
