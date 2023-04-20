@@ -2,6 +2,9 @@ package src.main.java.model;
 
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import src.main.java.controller.*;
 
 public class ChatClient {
@@ -107,8 +110,20 @@ public class ChatClient {
         if (message.equals(EXIT_COMMAND)) {
             out.println("SIGNOFF " + this.username);
         } else {
-            out.println("MESSAGE " + message);
+            // Add timestamp to the message
+            String timestampedMessage = "[" + getCurrentTimestamp() + "] " + message;
+            out.println("MESSAGE " + timestampedMessage);
         }
+    }
+
+    private String getCurrentTimestamp() {
+        // Get the current time in milliseconds
+        long currentTimeMillis = System.currentTimeMillis();
+
+        // Convert the time to a formatted string
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date resultDate = new Date(currentTimeMillis);
+        return sdf.format(resultDate);
     }
 
     private class ClientListener implements Runnable {
