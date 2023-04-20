@@ -110,20 +110,8 @@ public class ChatClient {
         if (message.equals(EXIT_COMMAND)) {
             out.println("SIGNOFF " + this.username);
         } else {
-            // Add timestamp to the message
-            String timestampedMessage = "[" + getCurrentTimestamp() + "] " + message;
-            out.println("MESSAGE " + timestampedMessage);
+            out.println("MESSAGE " + message);
         }
-    }
-
-    private String getCurrentTimestamp() {
-        // Get the current time in milliseconds
-        long currentTimeMillis = System.currentTimeMillis();
-
-        // Convert the time to a formatted string
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date resultDate = new Date(currentTimeMillis);
-        return sdf.format(resultDate);
     }
 
     private class ClientListener implements Runnable {

@@ -6,10 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChatServer {
@@ -18,7 +17,7 @@ public class ChatServer {
     private ServerSocket serverSocket;
 
     final private Map<Integer, PrintWriter> clients = new HashMap<Integer, PrintWriter>();
-    final private ArrayList<LinkedBlockingQueue<String>> queuelist = new ArrayList<LinkedBlockingQueue<String>>(5);
+    final private ArrayList<LinkedBlockingQueue<Message>> queuelist = new ArrayList<LinkedBlockingQueue<Message>>(5);
 
     public void run() throws IOException {
         try {
@@ -28,7 +27,7 @@ public class ChatServer {
 
             // Initialize list of message queues and launch threads
             for (int i = 0; i < numQueues; i++) {
-                queuelist.add(new LinkedBlockingQueue<String>());
+                queuelist.add(new LinkedBlockingQueue<Message>());
                 QueueThread q = new QueueThread(queuelist.get(i));
                 Thread qThread = new Thread(q);
                 qThread.start();
@@ -55,7 +54,8 @@ public class ChatServer {
     }
 
     private synchronized void broadcast(String message, int clientId) {
-        queuelist.get(clientId % queuelist.size()).add(message);
+        Message m = new Message(message);
+        queuelist.get(clientId % queuelist.size()).add(m);
     }
 
     private synchronized void addClient(Integer id, PrintWriter out) {
@@ -83,6 +83,16 @@ public class ChatServer {
             this.id = id;
         }
 
+        private String getCurrentTimestamp() {
+            // Get the current time in milliseconds
+            long currentTimeMillis = System.currentTimeMillis();
+
+            // Convert the time to a formatted string
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            Date resultDate = new Date(currentTimeMillis);
+            return sdf.format(resultDate);
+        }
+
         @Override
         public void run() {
             try {
@@ -98,7 +108,7 @@ public class ChatServer {
                 // Process sign in message from client
                 if (tokens.length >= 2 && tokens[0].equals("SIGNIN")) {
                     username = String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
-                    broadcast(tokens[0] + " " + username + " joined the chat", id);
+                    broadcast(tokens[0] + " " + getCurrentTimestamp() + " " + username +  " joined the chat", id);
                     addClient(id, out);
 
                     // Send acknowledgement message to client
@@ -126,11 +136,11 @@ public class ChatServer {
 
                     // Process message from client
                     if (tokens.length >= 2 && tokens[0].equals("MESSAGE")) {
-                        String message = tokens[0] + " " + username + ": "
+                        String message = tokens[0] + " " + getCurrentTimestamp() + " " + username + ": "
                                 + String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
                         broadcast(message, id);
                     } else if (tokens.length >= 2 && tokens[0].equals("SIGNOFF")) {
-                        String signoffMessage = tokens[0] + " " + username + " left the chat";
+                        String signoffMessage = tokens[0] + " " + getCurrentTimestamp() + " " + username + " left the chat";
                         removeClient(id);
                         broadcast(signoffMessage, id);
 
@@ -161,9 +171,9 @@ public class ChatServer {
     }
 
     private class QueueThread implements Runnable {
-        private final LinkedBlockingQueue<String> queue;
+        private final LinkedBlockingQueue<Message> queue;
 
-        QueueThread(LinkedBlockingQueue<String> queue) {
+        QueueThread(LinkedBlockingQueue<Message> queue) {
             this.queue = queue;
         }
 
@@ -171,17 +181,42 @@ public class ChatServer {
         public void run() {
             try {
                 while (true) {
-                    String headMessage = (String) queue.poll();
+                    Message headMessage = queue.take();
 
                     if (!(headMessage == null)) {
                         for (Map.Entry<Integer, PrintWriter> pair : clients.entrySet()) {
-                            pair.getValue().println(headMessage);
+                            pair.getValue().println(headMessage.getMessage());
                         }
                     }
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException | InterruptedException e) {
                 System.out.println("Error in queue thread : " + e.getMessage());
             }
+        }
+    }
+
+    class Message implements Comparable<Message> {
+        private String message;
+        private LocalTime timestamp;
+
+        public Message(String message) {
+            this.message = message;
+            String[] parts = message.split(" ");
+            timestamp = LocalTime.parse(parts[1]);
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public LocalTime getTimestamp() {
+            return timestamp;
+        }
+
+        @Override
+        public int compareTo(Message other) {
+            // Compare messages based on their timestamps
+            return this.timestamp.compareTo(other.timestamp);
         }
     }
 }
