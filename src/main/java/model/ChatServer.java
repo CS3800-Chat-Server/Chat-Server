@@ -9,14 +9,15 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChatServer {
-    private static final int PORT = 1234;
+    private static final int PORT = 277;
     private final int numQueues = 5;
     private ServerSocket serverSocket;
 
-    final private Map<Integer, PrintWriter> clients = new HashMap<Integer, PrintWriter>();
+    final private Map<Integer, PrintWriter> clients = new ConcurrentHashMap<Integer, PrintWriter>();
     final private ArrayList<LinkedBlockingQueue<Message>> queuelist = new ArrayList<LinkedBlockingQueue<Message>>(5);
 
     public void run() throws IOException {
@@ -108,7 +109,7 @@ public class ChatServer {
                 // Process sign in message from client
                 if (tokens.length >= 2 && tokens[0].equals("SIGNIN")) {
                     username = String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
-                    broadcast(tokens[0] + " " + getCurrentTimestamp() + " " + username +  " joined the chat", id);
+                    broadcast(tokens[0] + " " + getCurrentTimestamp() + " " + username + " joined the chat", id);
                     addClient(id, out);
 
                     // Send acknowledgement message to client
@@ -140,7 +141,8 @@ public class ChatServer {
                                 + String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
                         broadcast(message, id);
                     } else if (tokens.length >= 2 && tokens[0].equals("SIGNOFF")) {
-                        String signoffMessage = tokens[0] + " " + getCurrentTimestamp() + " " + username + " left the chat";
+                        String signoffMessage = tokens[0] + " " + getCurrentTimestamp() + " " + username
+                                + " left the chat";
                         removeClient(id);
                         broadcast(signoffMessage, id);
 
