@@ -3,6 +3,7 @@ package src.main.java.model;
 import java.io.*;
 import java.net.*;
 import src.main.java.controller.*;
+import java.util.*;
 
 public class ChatClient {
     private static final String EXIT_COMMAND = ".";
@@ -10,6 +11,7 @@ public class ChatClient {
     private Controller clientHandler;
 
     private String username;
+    private Date timestamp = new Date();
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
@@ -101,13 +103,14 @@ public class ChatClient {
 
         this.username = username;
         isLoggingIn = false;
+        this.timestamp = new Date();
     }
 
     public void sendMessage(String message) {
         if (message.equals(EXIT_COMMAND)) {
             out.println("SIGNOFF " + this.username);
         } else {
-            out.println("MESSAGE " + message);
+            out.println("MESSAGE " + message + " (" + timestamp + ")");
         }
     }
 
