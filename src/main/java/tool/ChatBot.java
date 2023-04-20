@@ -36,7 +36,7 @@ public class ChatBot implements Runnable {
             while (isRunning) {
                 // Send some message
                 // Sleep for a little to space messages out
-                writer.println(username + ": Test message from " + username);
+                writer.println("MESSAGE Test message from " + username);
                 Thread.sleep(2000); // 2 second sleep time
             }
 
