@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChatServer {
@@ -17,7 +18,7 @@ public class ChatServer {
     private final int numQueues = 5;
     private ServerSocket serverSocket;
 
-    final private Map<Integer, PrintWriter> clients = new HashMap<Integer, PrintWriter>();
+    final private Map<Integer, PrintWriter> clients = new ConcurrentHashMap<Integer, PrintWriter>();
     final private ArrayList<LinkedBlockingQueue<String>> queuelist = new ArrayList<LinkedBlockingQueue<String>>(5);
 
     public void run() throws IOException {
