@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChatServer {
-    private static final int PORT = 1234;
+    private static final int PORT = 277;
     private final int numQueues = 5;
     private ServerSocket serverSocket;
 
