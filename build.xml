@@ -1,0 +1,45 @@
+<project name="CS3800_Chat_Server" default="compile">
+
+  <!-- Set properties -->
+  <property name="src.dir" value="./src/main/java"/>
+  <property name="build.dir" value="./bin"/>
+
+  <!-- Define the clean target -->
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <!-- Define the compile target -->
+  <target name="compile">
+    <mkdir dir="${build.dir}"/>
+    <javac destdir="${build.dir}">
+      <src path="${src.dir}/model"/>
+      <src path="${src.dir}/view"/>
+      <src path="${src.dir}/controller"/>
+      <src path="${src.dir}/tool"/>
+    </javac>
+  </target>
+
+  <!-- Define the clean & build target -->
+  <target name="build" depends="clean, compile"/>
+
+ <!-- Define the run-server target -->
+  <target name="run-server" depends="compile">
+    <java classname="src.main.java.model.ChatServer" classpath="${build.dir}"></java>
+  </target>
+  
+  <!-- Define the test target -->
+  <target name="test" depends="compile">
+    <java classname="src.main.java.controller.Controller" classpath="${build.dir}"></java>
+  </target>
+
+  <!-- Define the chatbot target -->
+  <target name="chatbot" depends="compile">
+    <java classname="src.main.java.tool.ChatBot" classpath="${build.dir}">
+       <arg value="0.0.0.0"/>
+       <arg value="1234"/>
+       <arg value="5"/>
+    </java>
+  </target>
+
+</project>
